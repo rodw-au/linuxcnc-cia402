@@ -3,6 +3,8 @@
     <!-- Joint 0 -->
     <slave idx="0" type="generic" vid="00000a88" pid="0a880004" configPdos="true">
       <dcConf assignActivate="300" sync0Cycle="*1" sync0Shift="0"/>
+      <sdoConfig idx="2000" subIdx="0"><sdoDataRaw data ="70 17"/></sdoConfig>  <!-- Max motor current (6.0) -->
+      <sdoConfig idx="2011" subIdx="0"><sdoDataRaw data ="01 00"/></sdoConfig>  <!-- Closed loop -->
       <syncManager idx="2" dir="out">
         <pdo idx="1600">
           <pdoEntry idx="6040" subIdx="00" bitLen="16" halPin="cia-controlword" halType="u32"/>
@@ -27,6 +29,8 @@
     <!-- Joint 1 -->
     <slave idx="1" type="generic" vid="00000a88" pid="0a880004" configPdos="true">
       <dcConf assignActivate="300" sync0Cycle="*1" sync0Shift="0"/>
+      <sdoConfig idx="2000" subIdx="0"><sdoDataRaw data ="70 17"/></sdoConfig>  <!-- Max motor current (6.0) -->
+      <sdoConfig idx="2011" subIdx="0"><sdoDataRaw data ="01 00"/></sdoConfig>  <!-- Closed loop -->
       <syncManager idx="2" dir="out">
         <pdo idx="1600">
           <pdoEntry idx="6040" subIdx="00" bitLen="16" halPin="cia-controlword" halType="u32"/>
@@ -50,6 +54,8 @@
     <!-- Joint 2 -->
     <slave idx="2" type="generic" vid="00000a88" pid="0a880004" configPdos="true">
       <dcConf assignActivate="300" sync0Cycle="*1" sync0Shift="0"/>
+      <sdoConfig idx="2000" subIdx="0"><sdoDataRaw data ="70 17"/></sdoConfig>  <!-- Max motor current (6.0) -->
+      <sdoConfig idx="2011" subIdx="0"><sdoDataRaw data ="01 00"/></sdoConfig>  <!-- Closed loop -->
       <syncManager idx="2" dir="out">
         <pdo idx="1600">
           <pdoEntry idx="6040" subIdx="00" bitLen="16" halPin="cia-controlword" halType="u32"/>
@@ -73,6 +79,8 @@
     <!-- Joint 3 -->
     <slave idx="3" type="generic" vid="00000a88" pid="0a880004" configPdos="true">
       <dcConf assignActivate="300" sync0Cycle="*1" sync0Shift="0"/>
+      <sdoConfig idx="2000" subIdx="0"><sdoDataRaw data ="70 17"/></sdoConfig>  <!-- Max motor current (6.0) -->
+      <sdoConfig idx="2011" subIdx="0"><sdoDataRaw data ="01 00"/></sdoConfig>  <!-- Closed loop -->
       <syncManager idx="2" dir="out">
         <pdo idx="1600">
           <pdoEntry idx="6040" subIdx="00" bitLen="16" halPin="cia-controlword" halType="u32"/>
