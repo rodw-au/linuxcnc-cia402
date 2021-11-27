@@ -14,7 +14,7 @@ loadrt [EMCMOT]EMCMOT servo_period_nsec=[EMCMOT]SERVO_PERIOD num_joints=[KINS]JO
 loadusr -W lcec_conf ethercat-conf.xml
 loadrt lcec
 loadrt cia402 count=4
-loadrt pid names=0-pid,1-pid,2-pid,3-pid
+#loadrt pid names=0-pid,1-pid,2-pid,3-pid
 
 
 ###########################################################
@@ -30,10 +30,10 @@ addf cia402.3.read-all servo-thread
 addf motion-command-handler servo-thread
 addf motion-controller servo-thread
 
-addf 0-pid.do-pid-calcs servo-thread
-addf 1-pid.do-pid-calcs servo-thread
-addf 2-pid.do-pid-calcs servo-thread
-addf 3-pid.do-pid-calcs servo-thread
+#addf 0-pid.do-pid-calcs servo-thread
+#addf 1-pid.do-pid-calcs servo-thread
+#addf 2-pid.do-pid-calcs servo-thread
+#addf 3-pid.do-pid-calcs servo-thread
 
 addf cia402.0.write-all servo-thread
 addf cia402.1.write-all servo-thread
