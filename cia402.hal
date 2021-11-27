@@ -76,14 +76,16 @@ net 0-pos-cmd    <= joint.0.motor-pos-cmd
 net 0-vel-cmd    <= joint.0.vel-cmd
 net 0-pos-fb     <= joint.0.motor-pos-fb
 net 0-enable     <= joint.0.amp-enable-out
-net 0-amp-fault  <= joint.0.amp-fault-in
+net 0-amp-fault  <= cia402.0.drv-fault
+
+joint.0.amp-fault-in
 
 # --- connect stepper driver to joint
 
 net 0-pos-cmd    => cia402.0.pos-cmd
 net 0-pos-fb     => cia402.0.pos-fb
 net 0-enable     => cia402.0.enable
-net 0-amp-fault  => cia402.0.drv-fault
+net 0-amp-fault  => joint.0.amp-fault-in
 
 
 #from servo(ethercat) to cia402
@@ -105,6 +107,22 @@ net 0-drv-target-velo     cia402.0.drv-target-velocity => lcec.0.0.target-veloci
 setp cia402.1.csp-mode 1
 setp cia402.1.pos-scale 1000
 
+# --- joint signals for motion
+
+net 1-pos-cmd    <=  joint.1.motor-pos-cmd
+net 1-vel-cmd    <=  joint.1.vel-cmd
+net 1-pos-fb     <=  joint.1.motor-pos-fb
+net 1-enable     <=  joint.1.amp-enable-out
+net 1-amp-fault  <= cia402.1.drv-fault
+
+# --- connect stepper driver to joint
+
+net 1-pos-cmd    => cia402.1.pos-cmd
+net 1-pos-fb     => cia402.1.pos-fb
+net 1-enable     => cia402.1.enable
+net 1-amp-fault  =>  joint.1.amp-fault-in
+
+
 #from servo(ethercat) to cia402
 net 1-statusword      lcec.1.0.cia-statusword => cia402.1.statusword
 net 1-opmode-display  lcec.1.0.opmode-display => cia402.1.opmode-display
@@ -117,17 +135,27 @@ net 1-modes-of-operation  cia402.1.opmode => lcec.1.0.opmode
 net 1-drv-target-pos      cia402.1.drv-target-position => lcec.1.0.target-position
 net 1-drv-target-velo     cia402.1.drv-target-velocity => lcec.1.0.target-velocity
 
-#from motion to cia
-net 1-enable    <= joint.1.amp-enable-out => cia402.1.enable
-net 1-amp-fault => joint.1.amp-fault-in   <= cia402.1.drv-fault
-net 1-pos-cmd   <= joint.1.motor-pos-cmd  => cia402.1.pos-cmd
-net 1-pos-fb    => joint.1.motor-pos-fb   <= cia402.1.pos-fb
-
 #
 # Joint 2
 #
 setp cia402.2.csp-mode 1
 setp cia402.2.pos-scale 1000
+
+# --- joint signals for motion
+
+net 2-pos-cmd    <=  joint.2.motor-pos-cmd
+net 2-vel-cmd    <=  joint.2.vel-cmd
+net 2-pos-fb     <=  joint.2.motor-pos-fb
+net 2-enable     <=  joint.2.amp-enable-out
+net 2-amp-fault  <= cia402.2.drv-fault
+
+# --- connect stepper driver to joint
+
+net 2-pos-cmd    => cia402.2.pos-cmd
+net 2-pos-fb     => cia402.2.pos-fb
+net 2-enable     => cia402.2.enable
+net 2-amp-fault  =>  joint.2.amp-fault-in
+
 
 #from servo(ethercat) to cia402
 net 2-statusword      lcec.2.0.cia-statusword => cia402.2.statusword
@@ -141,17 +169,28 @@ net 2-modes-of-operation  cia402.2.opmode => lcec.2.0.opmode
 net 2-drv-target-pos      cia402.2.drv-target-position => lcec.2.0.target-position
 net 2-drv-target-velo     cia402.2.drv-target-velocity => lcec.2.0.target-velocity
 
-#from motion to cia
-net 2-enable    <= joint.2.amp-enable-out => cia402.2.enable
-net 2-amp-fault => joint.2.amp-fault-in   <= cia402.2.drv-fault
-net 2-pos-cmd   <= joint.2.motor-pos-cmd  => cia402.2.pos-cmd
-net 2-pos-fb    => joint.2.motor-pos-fb   <= cia402.2.pos-fb
 
 #
 # Joint 3
 #
 setp cia402.3.csp-mode 1
 setp cia402.3.pos-scale 3600
+
+# --- joint signals for motion
+
+net 3-pos-cmd    <=  joint.3.motor-pos-cmd
+net 3-vel-cmd    <=  joint.3.vel-cmd
+net 3-pos-fb     <=  joint.3.motor-pos-fb
+net 3-enable     <=  joint.3.amp-enable-out
+net 3-amp-fault  <= cia402.3.drv-fault
+
+# --- connect stepper driver to joint
+
+net 2-pos-cmd    => cia402.2.pos-cmd
+net 2-pos-fb     => cia402.2.pos-fb
+net 2-enable     => cia402.2.enable
+net 2-amp-fault  =>  joint.2.amp-fault-in
+
 
 #from servo(ethercat) to cia402
 net 3-statusword      lcec.3.0.cia-statusword => cia402.3.statusword
@@ -170,10 +209,10 @@ net 3-enable    <= joint.3.amp-enable-out => cia402.3.enable
 net 3-amp-fault => joint.3.amp-fault-in   <= cia402.3.drv-fault
 
 #homing
-net 0-home-index <= joint.0.index-enable  => cia402.0.home
-net 1-home-index <= joint.1.index-enable  => cia402.1.home
-net 2-home-index <= joint.2.index-enable  => cia402.2.home
-net 3-home-index <= joint.3.index-enable  => cia402.3.home
+#net 0-home-index <= joint.0.index-enable  => cia402.0.home
+#net 1-home-index <= joint.1.index-enable  => cia402.1.home
+#net 2-home-index <= joint.2.index-enable  => cia402.2.home
+#net 3-home-index <= joint.3.index-enable  => cia402.3.home
 
 # Manual 2.3.2 - 0x6040 Control words
 # to switch on and enable operation we need to set the following bits true
@@ -185,25 +224,25 @@ net 3-home-index <= joint.3.index-enable  => cia402.3.home
 net machine-is-on <= halui.machine.is-on
 
 #Servo 0 on
-net machine-is-on => lcec.0.0.cia-controlword-0 true
-net machine-is-on => lcec.0.0.cia-controlword-1 true
-net machine-is-on => lcec.0.0.cia-controlword-2 true
-net machine-is-on => lcec.0.0.cia-controlword-3 true
+#net machine-is-on => lcec.0.0.cia-controlword-0 true
+#net machine-is-on => lcec.0.0.cia-controlword-1 true
+#net machine-is-on => lcec.0.0.cia-controlword-2 true
+#net machine-is-on => lcec.0.0.cia-controlword-3 true
 
 #Servo 1 on
-net machine-is-on => lcec.1.0.cia-controlword-0 true
-net machine-is-on => lcec.1.0.cia-controlword-1 true
-net machine-is-on => lcec.1.0.cia-controlword-2 true
-net machine-is-on => lcec.1.0.cia-controlword-3 true
+#net machine-is-on => lcec.1.0.cia-controlword-0 true
+#net machine-is-on => lcec.1.0.cia-controlword-1 true
+#net machine-is-on => lcec.1.0.cia-controlword-2 true
+#net machine-is-on => lcec.1.0.cia-controlword-3 true
 
 #Servo 2 on
-net machine-is-on => lcec.2.0.cia-controlword-0 true
-net machine-is-on => lcec.2.0.cia-controlword-1 true
-net machine-is-on => lcec.2.0.cia-controlword-2 true
-net machine-is-on => lcec.2.0.cia-controlword-3 true
+#net machine-is-on => lcec.2.0.cia-controlword-0 true
+#net machine-is-on => lcec.2.0.cia-controlword-1 true
+#net machine-is-on => lcec.2.0.cia-controlword-2 true
+#net machine-is-on => lcec.2.0.cia-controlword-3 true
 
 #Servo 3 on
-net machine-is-on => lcec.3.0.cia-controlword-0 true
-net machine-is-on => lcec.3.0.cia-controlword-1 true
-net machine-is-on => lcec.3.0.cia-controlword-2 true
-net machine-is-on => lcec.3.0.cia-controlword-3 true
+#net machine-is-on => lcec.3.0.cia-controlword-0 true
+#net machine-is-on => lcec.3.0.cia-controlword-1 true
+#net machine-is-on => lcec.3.0.cia-controlword-2 true
+#net machine-is-on => lcec.3.0.cia-controlword-3 true
