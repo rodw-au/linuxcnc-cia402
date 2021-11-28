@@ -101,6 +101,7 @@
         </pdo>
       </syncManager>
     </slave>
+    
   </master>
 </masters>
 
