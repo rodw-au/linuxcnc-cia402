@@ -1,0 +1,70 @@
+Open terminal in your home directory.
+
+sudo apt-get install dist-upgrade
+sudo apt-get install git 
+sudo apt-get install mercurial
+sudo apt-get install quilt
+
+
+git clone http://github.com/LinuxCNC/linuxcnc.git
+git clone http://github.com/sittner/linuxcnc-ethercat.git
+git clone http://github.com/sittner/ec-debianize.git
+
+cd linuxcnc/debian/ 
+./configure uspace 
+cd 
+linuxcnc/ 
+dpkg-checkbuilddeps  (copy the required dep's to clip board)
+sudo apt-get install (alll the required dep's)
+
+cd src/ 
+./autogen.sh 
+./configure 
+make -j2 
+sudo make setuid
+ 
+cd ec-debianize 
+./get_source.sh 
+cd etherlabmaster/
+sudo dpkg-buildpackage 
+
+cd ec-debianize 
+ sudo dpkg -i etherlabmaster_ (press tab to autofill)
+ sudo dpkg -i etherlabmaster-dev_* (press tab to autofill)
+
+
+
+ sudo thunar
+etc/default/ethercat as root  <== navigate to here and open in your favorite editor
+
+Find your mac adres : $ ip link show (output = link/ether ....)
+
+
+Type in MASTER0_DEVICE="lo:ve:me:te:nd:er" (your mac adres my dear)
+
+Type in DEVICE_MODULES="generic"
+
+sudo update-ethercat-config (reboot, or restart your pc)
+
+
+cd linuxcnc-ethercat/ 
+make
+
+use this to find slave information to add to your xml example
+ethercat slaves -v
+
+
+4. To start linuxcnc with ethercat, start linuxcnc with simple axis gui.
+
+copy lcec_conf ==> ../linuxcnc-ethercat/src/lcec_conf ==> to your linuxcnc machine config
+copy lcec_so ==> ../linuxcnc-ethercat/src/lcec.so ==> to your home/.../linuxcnc/rtlib/ 
+
+First check if lcec_conf will load, open your halmeter.
+When you see the Lcec section, uncheck the # sign's in the postgui.hal file.
+
+if get error on load "permission denied thercat0"
+sudo chmod 666 /dev/EtherCAT0
+to give your self permission to access
+
+
+
