@@ -22,7 +22,14 @@ cd src/
 ./configure 
 make -j2 
 sudo make setuid
- 
+
+Add mq extension to mercurial
+sudo geany /etc/mercurial/hgrc
+addthese lines:
+[extensions]
+mq =
+save and exit geany
+
 cd ec-debianize 
 ./get_source.sh 
 cd etherlabmaster/
