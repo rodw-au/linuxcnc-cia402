@@ -1,7 +1,7 @@
 Open terminal in your home directory.
 
 sudo apt-get install dist-upgrade
-sudo apt-get install git 
+sudo apt-get git 
 sudo apt-get install mercurial
 sudo apt-get install quilt
 
