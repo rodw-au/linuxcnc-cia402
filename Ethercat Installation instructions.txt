@@ -1,4 +1,7 @@
 Open terminal in your home directory.
+mkdir dev
+cd dev
+clone all software into this folder to keep your home folder clean.
 
 sudo apt-get update
 sudo apt-get install git 
