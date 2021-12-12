@@ -47,8 +47,6 @@ cd ec-debianize
  sudo dpkg -i etherlabmaster_ (press tab to autofill)
  sudo dpkg -i etherlabmaster-dev_* (press tab to autofill)
 
-
-
  sudo thunar
 etc/default/ethercat as root  <== navigate to here and open in your favorite editor
 
@@ -81,6 +79,11 @@ When you see the Lcec section, uncheck the # sign's in the postgui.hal file.
 if get error on load "permission denied thercat0"
 sudo chmod 666 /dev/EtherCAT0
 to give your self permission to access
+To make these permissions permanent
+sudo thunar
+navigate to /etc/udev/rules.d
+geany 99-ethercat.rules and edit:
+GROUP="your_user_name"
 
 If you have a cia402 compatible drive, 
 git clone https://github.com/dbraun1981/hal-cia402
