@@ -67,15 +67,20 @@ sudo update-ethercat-config (reboot, or restart your pc)
 If this fails, see notes about dpk-source commit above
 
 cd linuxcnc-ethercat/ 
-make
+For a rip install
+-make clean
+-make install 
 
-YOu should be up and running
+For a installed (deb) version
+-make clean
+-sudo make install 
+You should not need to worry about this but for reference lec_conf gets copied to :
+deb install: /lib/linuxcnc/modules/
+rip install: /linuxcnc-dev/rtlib/
+
+You should be up and running
 use the following command to find slave information to add to your xml example
 ethercat slaves -v
-
-lcec_conf needs to copied from the ./linuxcnc-ethercat/src/ folder to your lib folder
-for a rip install it needs to be copied to /linuxcnc-dev/rtlib/ 
-for a deb install (the default) it goes in /lib/linuxcnc/modules/
 
 To start linuxcnc with ethercat, start linuxcnc with simple axis gui or start eith the example here.
 
