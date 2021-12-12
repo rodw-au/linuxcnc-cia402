@@ -73,15 +73,13 @@ YOu should be up and running
 use the following command to find slave information to add to your xml example
 ethercat slaves -v
 
-4. To start linuxcnc with ethercat, start linuxcnc with simple axis gui.
+lcec_conf needs to copied from the ./linuxcnc-ethercat/src/ folder to your lib folder
+for a rip install it needs to be copied to /linuxcnc-dev/rtlib/ 
+for a deb install (the default) it goes in /lib/linuxcnc/modules/
 
-copy lcec_conf ==> ../linuxcnc-ethercat/src/lcec_conf ==> to your linuxcnc machine config
-for a RIP install, copy lcec_so ==> 
-from../linuxcnc-ethercat/src/lcec.so ==> to your home/.../linuxcnc/rtlib/ 
+To start linuxcnc with ethercat, start linuxcnc with simple axis gui or start eith the example here.
 
-if you are using a deb install, the correct location for lcec.so is /lib/linuxcnc/modules/
-
-First check if lcec_conf will load, open your halmeter.
+First check if lcec_conf will load, then open halmeter or halshow.
 When you see the Lcec section, uncheck the # sign's in the postgui.hal file.
 
 if get error on load "permission denied ethrcat0" to gain access
