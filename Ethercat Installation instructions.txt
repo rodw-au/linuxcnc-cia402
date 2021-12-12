@@ -18,6 +18,10 @@ linuxcnc/
 dpkg-checkbuilddeps  (copy the required dep's to clip board)
 sudo apt-get install (alll the required dep's. YOu may need to edit the list to make it valid)
 
+Open synaptic: sudo synaptic
+Search for linux-headers
+Make sure the headers for your kernal (shhwn by uname -a is installed) id not, install it.
+
 cd src/ 
 ./autogen.sh 
 ./configure 
