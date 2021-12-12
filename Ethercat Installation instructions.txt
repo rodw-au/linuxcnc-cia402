@@ -40,6 +40,9 @@ cd ec-debianize
 cd etherlabmaster/
 sudo dpkg-buildpackage 
 
+If you get an error above check the prompts on the screen about a commit required. Make the commit as it requests:
+sudo dpk-source commit
+
 cd ec-debianize 
  sudo dpkg -i etherlabmaster_ (press tab to autofill)
  sudo dpkg -i etherlabmaster-dev_* (press tab to autofill)
