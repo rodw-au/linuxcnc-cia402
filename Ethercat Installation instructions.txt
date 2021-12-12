@@ -18,6 +18,7 @@ linuxcnc/
 dpkg-checkbuilddeps  (copy the required dep's to clip board)
 sudo apt-get install (alll the required dep's. YOu may need to edit the list to make it valid)
 
+# This section needs confirmation. It may not be required. 
 Open synaptic: sudo synaptic
 Search for linux-headers
 Make sure the headers for your kernal (shhwn by uname -a is installed) id not, install it.
@@ -44,45 +45,50 @@ If you get an error above check the prompts on the screen about a commit require
 sudo dpk-source commit
 
 cd ec-debianize 
- sudo dpkg -i etherlabmaster_ (press tab to autofill)
- sudo dpkg -i etherlabmaster-dev_* (press tab to autofill)
+sudo dpkg -i etherlabmaster_ (press tab to autofill)
+sudo dpkg -i etherlabmaster-dev_* (press tab to autofill)
+ 
+If you have cia402 drives such as the popular rtellignet ECT60/ECT86 drives
+git clone https://github.com/dbraun1981/hal-cia402
+cd ./hal-cia402
+sudo halcompile --install cia402.comp
 
- sudo thunar
-etc/default/ethercat as root  <== navigate to here and open in your favorite editor
+Find your mac address : $ ip link show (output = link/ether ....)
+Kepe it handy during the next step to set up the ethercat config file
 
-Find your mac adres : $ ip link show (output = link/ether ....)
-
-
-Type in MASTER0_DEVICE="lo:ve:me:te:nd:er" (your mac adres my dear)
-
+sudo thunar
+navigate to /etc/default
+open etc/default/ethercat as root 
+Type in MASTER0_DEVICE="lo:ve:me:te:nd:er" (your mac address)
 Type in DEVICE_MODULES="generic"
-
+Save and close file
 sudo update-ethercat-config (reboot, or restart your pc)
-
+If this fails, see notes about dpk-source commit above
 
 cd linuxcnc-ethercat/ 
 make
 
-use this to find slave information to add to your xml example
+YOu should be up and running
+use the following command to find slave information to add to your xml example
 ethercat slaves -v
-
 
 4. To start linuxcnc with ethercat, start linuxcnc with simple axis gui.
 
 copy lcec_conf ==> ../linuxcnc-ethercat/src/lcec_conf ==> to your linuxcnc machine config
-copy lcec_so ==> ../linuxcnc-ethercat/src/lcec.so ==> to your home/.../linuxcnc/rtlib/ 
+for a RIP install, copy lcec_so ==> 
+from../linuxcnc-ethercat/src/lcec.so ==> to your home/.../linuxcnc/rtlib/ 
+
 if you are using a deb install, the correct location for lcec.so is /lib/linuxcnc/modules/
 
 First check if lcec_conf will load, open your halmeter.
 When you see the Lcec section, uncheck the # sign's in the postgui.hal file.
 
-if get error on load "permission denied thercat0"
+if get error on load "permission denied ethrcat0" to gain access
 sudo chmod 666 /dev/EtherCAT0
-to give your self permission to access
 To make these permissions permanent
 sudo thunar
 navigate to /etc/udev/rules.d
-geany 99-ethercat.rules and edit:
+geany 99-ethercat.rules (name may be different) and edit:
 GROUP="your_user_name"
 
 If you have a cia402 compatible drive, 
@@ -90,5 +96,9 @@ git clone https://github.com/dbraun1981/hal-cia402
 cd ./hal-cia402
 halcompile --install hal-cia402.hal.comp
 
-
-
+Finally, to get a possibly working ethercat configuration, clone this repository
+run linuxcnc and open a sim. Allow it to be copied to you home directory to create the config folder. Exit Linuxcnc
+cd ~/linuxcnc/configs
+git clone  https://github.com/rodw-au/linuxcnc-cia402
+Open Linuxcnc and select cia402.hal
+Enjoy and tweak to suit your needs.
