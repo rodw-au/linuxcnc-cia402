@@ -91,7 +91,7 @@ GROUP="your_user_name"
 If you have a cia402 compatible drive, 
 git clone https://github.com/dbraun1981/hal-cia402
 cd ./hal-cia402
-halcompile --install hal-cia402.hal.comp
+halcompile --install cia402.comp
 
 Finally, to get a possibly working ethercat configuration, clone this repository
 run linuxcnc and open a sim. Allow it to be copied to you home directory to create the config folder. Exit Linuxcnc
