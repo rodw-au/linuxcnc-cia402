@@ -73,6 +73,7 @@ ethercat slaves -v
 
 copy lcec_conf ==> ../linuxcnc-ethercat/src/lcec_conf ==> to your linuxcnc machine config
 copy lcec_so ==> ../linuxcnc-ethercat/src/lcec.so ==> to your home/.../linuxcnc/rtlib/ 
+if you are using a deb install, the correct location for lcec.so is /lib/linuxcnc/modules/
 
 First check if lcec_conf will load, open your halmeter.
 When you see the Lcec section, uncheck the # sign's in the postgui.hal file.
