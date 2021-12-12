@@ -7,9 +7,9 @@ sudo apt-get install quilt
 sudo apt-get install dpkg-dev
 sudo apt-get install dkms
 
-git clone http://github.com/LinuxCNC/linuxcnc.git
-git clone http://github.com/sittner/linuxcnc-ethercat.git
-git clone http://github.com/sittner/ec-debianize.git
+git clone https://github.com/LinuxCNC/linuxcnc.git
+git clone https://github.com/sittner/linuxcnc-ethercat.git
+git clone https://github.com/sittner/ec-debianize.git
 
 cd linuxcnc/debian/ 
 ./configure uspace 
