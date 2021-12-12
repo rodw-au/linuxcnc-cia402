@@ -1,10 +1,11 @@
 Open terminal in your home directory.
 
-sudo apt-get install dist-upgrade
-sudo apt-get git 
+sudo apt-get dist-upgrade
+sudo apt-get install git 
 sudo apt-get install mercurial
 sudo apt-get install quilt
-
+sudo apt-get install dpkg-dev
+sudo apt-get install dkms
 
 git clone http://github.com/LinuxCNC/linuxcnc.git
 git clone http://github.com/sittner/linuxcnc-ethercat.git
@@ -15,7 +16,7 @@ cd linuxcnc/debian/
 cd 
 linuxcnc/ 
 dpkg-checkbuilddeps  (copy the required dep's to clip board)
-sudo apt-get install (alll the required dep's)
+sudo apt-get install (alll the required dep's. YOu may need to edit the list to make it valid)
 
 cd src/ 
 ./autogen.sh 
@@ -25,7 +26,7 @@ sudo make setuid
 
 Add mq extension to mercurial
 sudo geany /etc/mercurial/hgrc
-addthese lines:
+add these lines:
 [extensions]
 mq =
 save and exit geany
