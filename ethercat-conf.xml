@@ -135,21 +135,22 @@
         </pdo>        
       </syncManager>
     </slave>
-     <slave idx="3" type="generic" vid="00000a88" pid="0x0a880101" configPdos="true">
-      <dcConf assignActivate="300" sync0Cycle="*1" sync0Shift="0"/>
+    
+    <slave idx="3" type="generic" vid="00000a88" pid="0x0a880101" configPdos="false">
+      <dcConf assignActivate="300" sync0Cycle="*1" sync0Shift="0"/>     
       <syncManager idx="2" dir="out">
-        <pdo idx="1600">
+        <pdo idx="1600">            
   	      <!-- Digtial Outputs (RTEC1616)-->
-		  <pdoEntry idx="7000:01" subIdx="0" bitLen="16" halType="complex">
-		    <complexEntry bitLen="1" halPin="out-1" halType="bit"/>
-		    <complexEntry bitLen="1" halPin="out-2" halType="bit"/>
-		    <complexEntry bitLen="1" halPin="out-3" halType="bit"/>
-		    <complexEntry bitLen="1" halPin="out-4" halType="bit"/>
-		    <complexEntry bitLen="1" halPin="out-5" halType="bit"/>
-		    <complexEntry bitLen="1" halPin="out-6" halType="bit"/>
-		    <complexEntry bitLen="1" halPin="out-7" halType="bit"/>
-		    <complexEntry bitLen="1" halPin="out-8" halType="bit"/>
-		    <complexEntry bitLen="1" halPin="out-9" halType="bit"/>
+		  <pdoEntry idx="7000" subIdx="01" bitLen="16" halType="complex">
+		    <complexEntry bitLen="1" halPin="out-01" halType="bit"/>
+		    <complexEntry bitLen="1" halPin="out-02" halType="bit"/>
+		    <complexEntry bitLen="1" halPin="out-03" halType="bit"/>
+		    <complexEntry bitLen="1" halPin="out-04" halType="bit"/>
+		    <complexEntry bitLen="1" halPin="out-05" halType="bit"/>
+		    <complexEntry bitLen="1" halPin="out-06" halType="bit"/>
+		    <complexEntry bitLen="1" halPin="out-07" halType="bit"/>
+		    <complexEntry bitLen="1" halPin="out-08" halType="bit"/>
+		    <complexEntry bitLen="1" halPin="out-09" halType="bit"/>
 		    <complexEntry bitLen="1" halPin="out-10" halType="bit"/>
 		    <complexEntry bitLen="1" halPin="out-11" halType="bit"/>
 		    <complexEntry bitLen="1" halPin="out-12" halType="bit"/>
@@ -157,22 +158,26 @@
 		    <complexEntry bitLen="1" halPin="out-14" halType="bit"/>
 		    <complexEntry bitLen="1" halPin="out-15" halType="bit"/>
 		    <complexEntry bitLen="1" halPin="out-16" halType="bit"/>
-		  </pdoEntry>          
+		  </pdoEntry>  
+		  <pdoEntry idx="7000" subIdx="02" bitLen="16" halPin="pwm_duty1" halType="s32"/>
+		  <pdoEntry idx="7000" subIdx="03" bitLen="16" halPin="pwm_duty2" halType="s32"/>
+		  <pdoEntry idx="7000" subIdx="04" bitLen="16" halPin="pwm_duty3" halType="s32"/>
+		  <pdoEntry idx="7000" subIdx="05" bitLen="16" halPin="pwm_duty4" halType="s32"/>	  
       </pdo>
       </syncManager>      
       <syncManager idx="3" dir="in">
-        <pdo idx="1A00">
+        <pdo idx="1A00">	
           <!-- Digtial_inputs  -->
-		  <pdoEntry idx="6000:01" subIdx="0" bitLen="32" halType="complex">
-			<complexEntry bitLen="1" halPin="in-1" halType="bit"/>
-			<complexEntry bitLen="1" halPin="in-2" halType="bit"/>
-			<complexEntry bitLen="1" halPin="in-3" halType="bit"/>
-			<complexEntry bitLen="1" halPin="in-4" halType="bit"/>
-			<complexEntry bitLen="1" halPin="in-5" halType="bit"/>
-			<complexEntry bitLen="1" halPin="in-6" halType="bit"/>
-			<complexEntry bitLen="1" halPin="in-7" halType="bit"/>
-			<complexEntry bitLen="1" halPin="in-8" halType="bit"/>
-			<complexEntry bitLen="1" halPin="in-9" halType="bit"/>
+		  <pdoEntry idx="6000" subIdx="01" bitLen="32" halType="complex">
+			<complexEntry bitLen="1" halPin="in-01" halType="bit"/>
+			<complexEntry bitLen="1" halPin="in-02" halType="bit"/>
+			<complexEntry bitLen="1" halPin="in-03" halType="bit"/>
+			<complexEntry bitLen="1" halPin="in-04" halType="bit"/>
+			<complexEntry bitLen="1" halPin="in-05" halType="bit"/>
+			<complexEntry bitLen="1" halPin="in-06" halType="bit"/>
+			<complexEntry bitLen="1" halPin="in-07" halType="bit"/>
+			<complexEntry bitLen="1" halPin="in-08" halType="bit"/>
+			<complexEntry bitLen="1" halPin="in-09" halType="bit"/>
 			<complexEntry bitLen="1" halPin="in-10" halType="bit"/>
 			<complexEntry bitLen="1" halPin="in-11" halType="bit"/>
 			<complexEntry bitLen="1" halPin="in-12" halType="bit"/>
@@ -182,7 +187,8 @@
 			<complexEntry bitLen="1" halPin="in-16" halType="bit"/>	
  		  </pdoEntry>  
         </pdo>
-      </syncManager>        
+      </syncManager>     
+       
     </slave>
    </master>
 </masters>

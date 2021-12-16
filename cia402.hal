@@ -13,8 +13,8 @@ loadrt [EMCMOT]EMCMOT servo_period_nsec=[EMCMOT]SERVO_PERIOD num_joints=[KINS]JO
 
 loadusr -W ./lcec_conf ethercat-conf.xml
 loadrt lcec
-loadrt cia402 count=4
-loadrt pid names=0-pid,1-pid,2-pid,3-pid
+loadrt cia402 count=3
+loadrt pid names=0-pid,1-pid,2-pid
 
 
 ###########################################################
@@ -25,7 +25,7 @@ addf lcec.read-all servo-thread
 addf cia402.0.read-all servo-thread
 addf cia402.1.read-all servo-thread
 addf cia402.2.read-all servo-thread
-addf cia402.3.read-all servo-thread
+
 
 addf motion-command-handler servo-thread
 addf motion-controller servo-thread
@@ -33,12 +33,11 @@ addf motion-controller servo-thread
 addf 0-pid.do-pid-calcs servo-thread
 addf 1-pid.do-pid-calcs servo-thread
 addf 2-pid.do-pid-calcs servo-thread
-addf 3-pid.do-pid-calcs servo-thread
+
 
 addf cia402.0.write-all servo-thread
 addf cia402.1.write-all servo-thread
 addf cia402.2.write-all servo-thread
-addf cia402.3.write-all servo-thread
 addf lcec.write-all servo-thread
 
 #########################################
@@ -124,62 +123,13 @@ net 2-pos-cmd   <= joint.2.motor-pos-cmd  => cia402.2.pos-cmd
 net 2-pos-fb    => joint.2.motor-pos-fb   <= cia402.2.pos-fb
 
 #
-# Joint 3
+# Slave 3 I/O module - RTEC1616
 #
-#setp cia402.3.csp-mode 1
-#setp cia402.3.pos-scale 800
 
-#from servo(ethercat) to cia402
-#net 3-statusword      lcec.0.3.cia-statusword => cia402.3.statusword
-#net 3-opmode-display  lcec.0.3.opmode-display => cia402.3.opmode-display
-#net 3-drv-act-pos     lcec.0.3.actual-position => cia402.3.drv-actual-position
-#net 3-drv-act-velo    lcec.0.3.actual-velocity => cia402.3.drv-actual-velocity
+#Outputs
+#M3,M4,M5
+net spindle-on spindle.0.on => lcec.0.3.out-01
+net mist-on iocontrol.0.coolant-mist => lcec.0.3.out-02 
+net coolant-on => iocontrol.0.coolant-flood =>	lcec.0.3.out-03 
 
-#from cia402 to servo(ethercat)
-#net 3-controlword         cia402.3.controlword => lcec.0.3.cia-controlword
-#net 3-modes-of-operation  cia402.3.opmode => lcec.0.3.opmode
-#net 3-drv-target-pos      cia402.3.drv-target-position => lcec.0.3.target-position
-#net 3-drv-target-velo     cia402.3.drv-target-velocity => lcec.0.3.target-velocity
 
-#from motion to cia
-#net 3-enable    <= joint.3.amp-enable-out => cia402.3.enable
-#net 3-amp-fault => joint.3.amp-fault-in   <= cia402.3.drv-fault
-
-#homing
-net 0-home-index <= joint.0.index-enable  => cia402.0.home
-net 1-home-index <= joint.1.index-enable  => cia402.1.home
-net 2-home-index <= joint.2.index-enable  => cia402.2.home
-#net 3-home-index <= joint.3.index-enable  => cia402.3.home
-
-# Manual 2.3.2 - 0x6040 Control words
-# to switch on and enable operation we need to set the following bits true
-# 0,1,2,3
-# we should be able to convert that to hex or decimal but Beckhoff says it big-endian and intel is little-endian
-# so lets try this
-
-# this pin goes true after estop cleared and machine power button is pressed so we can use that to enable drives
-net machine-is-on <= halui.machine.is-on
-
-#Servo 0 on
-#net machine-is-on => lcec.0.0.cia-controlword-0 true
-#net machine-is-on => lcec.0.0.cia-controlword-1 true
-#net machine-is-on => lcec.0.0.cia-controlword-2 true
-#net machine-is-on => lcec.0.0.cia-controlword-3 true
-
-#Servo 1 on
-#net machine-is-on => lcec.0.1.cia-controlword-0 true
-#net machine-is-on => lcec.0.1.cia-controlword-1 true
-#net machine-is-on => lcec.0.1.cia-controlword-2 true
-#net machine-is-on => lcec.0.1.cia-controlword-3 true
-
-#Servo 2 on
-#net machine-is-on => lcec.0.2.cia-controlword-0 true
-#net machine-is-on => lcec.0.2.cia-controlword-1 true
-#net machine-is-on => lcec.0.2.cia-controlword-2 true
-#net machine-is-on => lcec.0.2.cia-controlword-3 true
-
-#Servo 3 on
-#net machine-is-on => lcec.0.3.cia-controlword-0 true
-#net machine-is-on => lcec.0.3.cia-controlword-1 true
-#net machine-is-on => lcec.0.3.cia-controlword-2 true
-#net machine-is-on => lcec.0.3.cia-controlword-3 true
