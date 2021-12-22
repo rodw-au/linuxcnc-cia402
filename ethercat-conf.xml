@@ -4,7 +4,14 @@
     <slave idx="0" type="generic" vid="00000a88" pid="0a880004" configPdos="true">
       <dcConf assignActivate="300" sync0Cycle="*1" sync0Shift="0"/>
       <sdoConfig idx="2000" subIdx="0"><sdoDataRaw data ="70 17"/></sdoConfig>  <!-- Max motor current (6.0) -->
+      <sdoConfig idx="2007" subIdx="6"><sdoDataRaw data ="05"/></sdoConfig>     <!-- Input 6 - Emergency Stop -->
+      <sdoConfig idx="2007" subIdx="5"><sdoDataRaw data ="05"/></sdoConfig>     <!-- Input 3 - Home Function -->
       <sdoConfig idx="2011" subIdx="0"><sdoDataRaw data ="01 00"/></sdoConfig>  <!-- Closed loop -->
+      <sdoConfig idx="6098" subIdx="0"><sdoDataRaw data ="11 00"/></sdoConfig>  <!-- Home mode 17 -->
+      <sdoConfig idx="607C" subIdx="0"><sdoDataRaw data ="00 00"/></sdoConfig>  <!-- Home offset 0  -->
+      <sdoConfig idx="609A" subIdx="0"><sdoDataRaw data ="F4 01"/></sdoConfig>  <!-- Home accelleration 500 -->
+      <sdoConfig idx="6099" subIdx="01"><sdoDataRaw data ="C4 09"/></sdoConfig>  <!-- Home fast speed 2500-->
+      <sdoConfig idx="6099" subIdx="02"><sdoDataRaw data ="F4 01"/></sdoConfig>  <!-- Home slow speed 500 -->
       <syncManager idx="2" dir="out">
         <pdo idx="1600">
           <pdoEntry idx="6040" subIdx="00" bitLen="16" halPin="cia-controlword" halType="u32"/>
@@ -49,6 +56,7 @@
     <slave idx="1" type="generic" vid="00000a88" pid="0a880004" configPdos="true">
       <dcConf assignActivate="300" sync0Cycle="*1" sync0Shift="0"/>
       <sdoConfig idx="2000" subIdx="0"><sdoDataRaw data ="70 17"/></sdoConfig>  <!-- Max motor current (6.0) -->
+      <sdoConfig idx="2007" subIdx="6"><sdoDataRaw data ="05"/></sdoConfig>     <!-- Input 6 - Emergency Stop -->      
       <sdoConfig idx="2011" subIdx="0"><sdoDataRaw data ="01 00"/></sdoConfig>  <!-- Closed loop -->
       <syncManager idx="2" dir="out">
         <pdo idx="1600">
@@ -93,8 +101,18 @@
     <!-- Joint 2 -->
     <slave idx="2" type="generic" vid="00000a88" pid="0a880004" configPdos="true">
       <dcConf assignActivate="300" sync0Cycle="*1" sync0Shift="0"/>
-      <sdoConfig idx="2000" subIdx="0"><sdoDataRaw data ="70 17"/></sdoConfig>  <!-- Max motor current (6.0) -->
-      <sdoConfig idx="2011" subIdx="0"><sdoDataRaw data ="01 00"/></sdoConfig>  <!-- Closed loop -->
+        <sdoConfig idx="2000" subIdx="0"><sdoDataRaw data ="58 1B"/></sdoConfig>    <!-- Max motor current (7.0 amps) -->
+      <!--   <sdoConfig idx="2024" subIdx="02"><sdoDataRaw data ="90 01"/></sdoConfig>   Position error 400 steps -->
+      <!-- <sdoConfig idx="2000" subIdx="0"><sdoDataRaw data ="88 13"/></sdoConfig>    Max motor current (5.0 amps) -->
+      <sdoConfig idx="2007" subIdx="6"><sdoDataRaw data ="05"/></sdoConfig>     - Input 6 - Emergency Stop -->
+      <sdoConfig idx="2011" subIdx="0"><sdoDataRaw data ="00 00"/></sdoConfig>  <!-- Open loop -->
+      <!-- <sdoConfig idx="200B" subIdx="01"><sdoDataRaw data ="01"/></sdoConfig>     Turn on auto setting-->
+      <!-- <sdoConfig idx="200C" subIdx="04"><sdoDataRaw data ="34 03"/></sdoConfig>  Motor Resistance -->
+      <!-- <sdoConfig idx="200C" subIdx="05"><sdoDataRaw data ="04 00"/></sdoConfig>  Motor Inductance 3.5 mH -->
+      <!-- <sdoConfig idx="200C" subIdx="06"><sdoDataRaw data ="77 01"/></sdoConfig>  Motor BEMF Cooeff 375-->
+      <!-- <sdoConfig idx="2060" subIdx="00"><sdoDataRaw data ="B8 88"/></sdoConfig>  Harmonic amplitude-->
+      <!-- <sdoConfig idx="2061" subIdx="00"><sdoDataRaw data ="84 03"/></sdoConfig>  Harmonic A phase-->
+      <!--<sdoConfig idx="2062" subIdx="00"><sdoDataRaw data ="84 03"/></sdoConfig>  Harmonic B phase-->
       <syncManager idx="2" dir="out">
         <pdo idx="1600">
           <pdoEntry idx="6040" subIdx="00" bitLen="16" halPin="cia-controlword" halType="u32"/>
@@ -113,6 +131,7 @@
       </syncManager>
       <syncManager idx="3" dir="in">
         <pdo idx="1a00">
+		  <pdoEntry idx="603F" subIdx="00" bitLen="16" halPin="cia-faultcode" halType="u32"/>
           <pdoEntry idx="6041" subIdx="00" bitLen="16" halPin="cia-statusword" halType="u32"/>
           <pdoEntry idx="6061" subIdx="00" bitLen="8" halPin="opmode-display" halType="s32"/>
           <pdoEntry idx="6064" subIdx="00" bitLen="32" halPin="actual-position" halType="s32"/>
