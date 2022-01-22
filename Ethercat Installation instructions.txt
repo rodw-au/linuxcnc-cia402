@@ -41,6 +41,8 @@ cd ec-debianize
 ./get_source.sh 
 cd etherlabmaster/
 sudo dpkg-buildpackage 
+try this instead to avoid unsigned key errors:
+sudo dpkg-buildpackage -uc -us
 
 If you get an error above check the prompts on the screen about a commit required. Make the commit as it requests:
 sudo dpk-source commit
