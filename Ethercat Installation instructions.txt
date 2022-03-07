@@ -71,6 +71,7 @@ If this fails, see notes about dpk-source commit above
 cd linuxcnc-ethercat/ 
 For a rip install
 -make clean
+-make
 -make install 
 
 For a installed (deb) version
