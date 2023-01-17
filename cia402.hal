@@ -11,10 +11,10 @@
 loadrt [KINS]KINEMATICS
 loadrt [EMCMOT]EMCMOT servo_period_nsec=[EMCMOT]SERVO_PERIOD num_joints=[KINS]JOINTS
 
-loadusr -W ./lcec_conf ethercat-conf.xml
+loadusr -W lcec_conf ethercat-conf.xml
 loadrt lcec
 loadrt cia402 count=3
-loadrt pid names=s-pid,0-pid,1-pid,2-pid
+loadrt pid names=pid.x,pid.y,pid.z
 
 ###########################################################
 # Functions servo-thread
@@ -27,10 +27,10 @@ addf cia402.2.read-all servo-thread
 
 addf motion-command-handler servo-thread
 addf motion-controller servo-thread
-addf s-pid.do-pid-calcs servo-thread
-addf 0-pid.do-pid-calcs servo-thread
-addf 1-pid.do-pid-calcs servo-thread
-addf 2-pid.do-pid-calcs servo-thread
+#addf s-pid.do-pid-calcs servo-thread
+addf pid.x.do-pid-calcs servo-thread
+addf pid.y.do-pid-calcs servo-thread
+addf pid.z.do-pid-calcs servo-thread
 
 addf cia402.0.write-all servo-thread
 addf cia402.1.write-all servo-thread
@@ -44,6 +44,13 @@ addf lcec.write-all servo-thread
 net emc-enable => iocontrol.0.emc-enable-in
 sets emc-enable 1
 
+### modified
+net ec-slaves-responding <= lcec.slaves-responding
+net ec-link-up <= lcec.link-up
+net ec-all-op <= lcec.all-op
+
+
+
 #config
 
  
@@ -51,79 +58,151 @@ sets emc-enable 1
 # Joint 0
 #
 setp cia402.0.csp-mode 1
-setp cia402.0.pos-scale 800
+setp cia402.0.velo-scale 1
+setp cia402.0.pos-scale 256000
 
+#modification
+setp pid.x.Pgain [JOINT_0]P
+setp pid.x.Igain [JOINT_0]I
+setp pid.x.Dgain [JOINT_0]D
+setp pid.x.FF0 [JOINT_0]FF0
+setp pid.x.FF1 [JOINT_0]FF1
+setp pid.x.FF2 [JOINT_0]FF2
+setp pid.x.deadband [JOINT_0]DEADBAND
+setp pid.x.maxoutput [JOINT_0]MAX_OUTPUT
+net x-enable => pid.x.enable
+net x-pos-cmd => pid.x.command
+net x-pos-fb => pid.x.feedback
+net x-vel-cmd <= pid.x.output
 
 #from servo(ethercat) to cia402
-net 0-statusword      lcec.0.0.cia-statusword => cia402.0.statusword
-net 0-opmode-display  lcec.0.0.opmode-display => cia402.0.opmode-display
-net 0-drv-act-pos     lcec.0.0.actual-position => cia402.0.drv-actual-position
-net 0-drv-act-velo    lcec.0.0.actual-velocity => cia402.0.drv-actual-velocity
+net x-statusword      lcec.0.0.cia-statusword => cia402.0.statusword
+net x-opmode-display  lcec.0.0.opmode-display => cia402.0.opmode-display
+net x-drv-act-pos     lcec.0.0.actual-position => cia402.0.drv-actual-position
+net x-drv-act-velo    lcec.0.0.actual-velocity => cia402.0.drv-actual-velocity
 
 #from motion to cia
 
-net 0-home-index <= joint.0.index-enable  => cia402.0.home
-net 0-enable     <= joint.0.amp-enable-out => cia402.0.enable
-net 0-amp-fault  => joint.0.amp-fault-in   <= cia402.0.drv-fault
-net 0-pos-cmd    <= joint.0.motor-pos-cmd  => cia402.0.pos-cmd
-net 0-pos-fb     => joint.0.motor-pos-fb   <= cia402.0.pos-fb
-#net 0-home          lcec.0.0.in-5          => joint.0.home-sw-in
+net x-home-index <= joint.0.index-enable  => cia402.0.home
+net x-enable     <= joint.0.amp-enable-out => cia402.0.enable
+net x-amp-fault  => joint.0.amp-fault-in   <= cia402.0.drv-fault
+net x-pos-cmd    <= joint.0.motor-pos-cmd  => cia402.0.pos-cmd
+net x-pos-fb     => joint.0.motor-pos-fb   <= cia402.0.pos-fb
+#net x-home          lcec.0.0.in-5          => joint.0.home-sw-in
 
 #from cia402 to servo(ethercat)
-net 0-controlword         cia402.0.controlword => lcec.0.0.cia-controlword
-net 0-modes-of-operation  cia402.0.opmode => lcec.0.0.opmode
-net 0-drv-target-pos      cia402.0.drv-target-position => lcec.0.0.target-position
-net 0-drv-target-velo     cia402.0.drv-target-velocity => lcec.0.0.target-velocity
+net x-controlword         cia402.0.controlword => lcec.0.0.cia-controlword
+net x-modes-of-operation  cia402.0.opmode => lcec.0.0.opmode
+net x-drv-target-pos      cia402.0.drv-target-position => lcec.0.0.target-position
+net x-drv-target-velo     cia402.0.drv-target-velocity => lcec.0.0.target-velocity
+
+#modifications
 
 
 
+# axis interface
+net x-neg-lim-in => joint.0.home-sw-in
+#net x-enable <= joint.0.amp-enable-out
+#net x-amp-fault => joint.0.amp-fault-in
+#net x-pos-cmd <= joint.0.motor-pos-cmd
+#net x-pos-fb => joint.0.motor-pos-fb
+net x-pos-joint <= joint.0.pos-fb
+net x-homed <= joint.0.homed
+net x-homing <= joint.0.homing
+net x-neg-lim-in => joint.0.neg-lim-sw-in
+net x-pos-lim-in => joint.0.pos-lim-sw-in
+
+#net x-vel-cmd =>cia402.0.velocity-cmd
 #
 # Joint 1
 #
 setp cia402.1.csp-mode 1
-setp cia402.1.pos-scale 800
+setp cia402.1.velo-scale 1
+setp cia402.1.pos-scale 256000
+
+#modification
+setp pid.y.Pgain [JOINT_1]P
+setp pid.y.Igain [JOINT_1]I
+setp pid.y.Dgain [JOINT_1]D
+setp pid.y.FF0 [JOINT_1]FF0
+setp pid.y.FF1 [JOINT_1]FF1
+setp pid.y.FF2 [JOINT_1]FF2
+setp pid.y.deadband [JOINT_1]DEADBAND
+setp pid.y.maxoutput [JOINT_1]MAX_OUTPUT
+net y-enable => pid.y.enable
+net y-pos-cmd => pid.y.command
+net y-pos-fb => pid.y.feedback
+net y-vel-cmd <= pid.y.output
 
 #from servo(ethercat) to cia402
-net 1-statusword      lcec.0.1.cia-statusword => cia402.1.statusword
-net 1-opmode-display  lcec.0.1.opmode-display => cia402.1.opmode-display
-net 1-drv-act-pos     lcec.0.1.actual-position => cia402.1.drv-actual-position
-net 1-drv-act-velo    lcec.0.1.actual-velocity => cia402.1.drv-actual-velocity
+net y-statusword      lcec.0.1.cia-statusword => cia402.1.statusword
+net y-opmode-display  lcec.0.1.opmode-display => cia402.1.opmode-display
+net y-drv-act-pos     lcec.0.1.actual-position => cia402.1.drv-actual-position
+net y-drv-act-velo    lcec.0.1.actual-velocity => cia402.1.drv-actual-velocity
 
 #from cia402 to servo(ethercat)
-net 1-controlword         cia402.1.controlword => lcec.0.1.cia-controlword
-net 1-modes-of-operation  cia402.1.opmode => lcec.0.1.opmode
-net 1-drv-target-pos      cia402.1.drv-target-position => lcec.0.1.target-position
-net 1-drv-target-velo     cia402.1.drv-target-velocity => lcec.0.1.target-velocity
+net y-controlword         cia402.1.controlword => lcec.0.1.cia-controlword
+net y-modes-of-operation  cia402.1.opmode => lcec.0.1.opmode
+net y-drv-target-pos      cia402.1.drv-target-position => lcec.0.1.target-position
+net y-drv-target-velo     cia402.1.drv-target-velocity => lcec.0.1.target-velocity
 
 #from motion to cia
-net 1-enable    <= joint.1.amp-enable-out => cia402.1.enable
-net 1-amp-fault => joint.1.amp-fault-in   <= cia402.1.drv-fault
-net 1-pos-cmd   <= joint.1.motor-pos-cmd  => cia402.1.pos-cmd
-net 1-pos-fb    => joint.1.motor-pos-fb   <= cia402.1.pos-fb
+net y-enable    <= joint.1.amp-enable-out => cia402.1.enable
+net y-amp-fault => joint.1.amp-fault-in   <= cia402.1.drv-fault
+net y-pos-cmd   <= joint.1.motor-pos-cmd  => cia402.1.pos-cmd
+net y-pos-fb    => joint.1.motor-pos-fb   <= cia402.1.pos-fb
+
+
+#modif2
+net y-pos-joint <= joint.1.pos-fb
+net y-homed <= joint.1.homed
+net y-homing <= joint.1.homing
 
 #
 # Joint 2
 #
 setp cia402.2.csp-mode 1
-setp cia402.2.pos-scale 2000
+setp cia402.2.velo-scale .1
+setp cia402.2.pos-scale 256000
+
+#modification
+setp pid.z.Pgain [JOINT_2]P
+setp pid.z.Igain [JOINT_2]I
+setp pid.z.Dgain [JOINT_2]D
+setp pid.z.FF0 [JOINT_2]FF0
+setp pid.z.FF1 [JOINT_2]FF1
+setp pid.z.FF2 [JOINT_2]FF2
+setp pid.z.deadband [JOINT_2]DEADBAND
+setp pid.z.maxoutput [JOINT_2]MAX_OUTPUT
+net z-enable => pid.z.enable
+net z-pos-cmd => pid.z.command
+net z-pos-fb => pid.z.feedback
+net z-vel-cmd <= pid.z.output
 
 #from servo(ethercat) to cia402
-net 2-statusword      lcec.0.2.cia-statusword => cia402.2.statusword
-net 2-opmode-display  lcec.0.2.opmode-display => cia402.2.opmode-display
-net 2-drv-act-pos     lcec.0.2.actual-position => cia402.2.drv-actual-position
-net 2-drv-act-velo    lcec.0.2.actual-velocity => cia402.2.drv-actual-velocity
+net z-statusword      lcec.0.2.cia-statusword => cia402.2.statusword
+net z-opmode-display  lcec.0.2.opmode-display => cia402.2.opmode-display
+net z-drv-act-pos     lcec.0.2.actual-position => cia402.2.drv-actual-position
+net z-drv-act-velo    lcec.0.2.actual-velocity => cia402.2.drv-actual-velocity
 
 #from cia402 to servo(ethercat)
-net 2-controlword         cia402.2.controlword => lcec.0.2.cia-controlword
-net 2-modes-of-operation  cia402.2.opmode => lcec.0.2.opmode
-net 2-drv-target-pos      cia402.2.drv-target-position => lcec.0.2.target-position
-net 2-drv-target-velo     cia402.2.drv-target-velocity => lcec.0.2.target-velocity
+net z-controlword         cia402.2.controlword => lcec.0.2.cia-controlword
+net z-modes-of-operation  cia402.2.opmode => lcec.0.2.opmode
+net z-drv-target-pos      cia402.2.drv-target-position => lcec.0.2.target-position
+net z-drv-target-velo     cia402.2.drv-target-velocity => lcec.0.2.target-velocity
 
 #from motion to cia
-net 2-enable    <= joint.2.amp-enable-out => cia402.2.enable
-net 2-amp-fault => joint.2.amp-fault-in   <= cia402.2.drv-fault
-net 2-pos-cmd   <= joint.2.motor-pos-cmd  => cia402.2.pos-cmd
-net 2-pos-fb    => joint.2.motor-pos-fb   <= cia402.2.pos-fb
+net z-enable    <= joint.2.amp-enable-out => cia402.2.enable
+net z-amp-fault => joint.2.amp-fault-in   <= cia402.2.drv-fault
+net z-pos-cmd   <= joint.2.motor-pos-cmd  => cia402.2.pos-cmd
+net z-pos-fb    => joint.2.motor-pos-fb   <= cia402.2.pos-fb
+
+
+#modif2
+net z-pos-joint <= joint.2.pos-fb
+net z-homed <= joint.2.homed
+net z-homing <= joint.2.homing
+
 
 #
 # Slave 3 I/O module - RTEC1616
@@ -131,8 +210,8 @@ net 2-pos-fb    => joint.2.motor-pos-fb   <= cia402.2.pos-fb
 
 #Outputs
 #M3,M4,M5
-net spindle-on spindle.0.on => lcec.0.3.out-01
-net mist-on iocontrol.0.coolant-mist => lcec.0.3.out-02 
-net coolant-on => iocontrol.0.coolant-flood =>	lcec.0.3.out-03 
+net spindle-on spindle.0.on => lcec.0.DO1.dout-0
+net mist-on iocontrol.0.coolant-mist => lcec.0.DO1.dout-1
+net coolant-on => iocontrol.0.coolant-flood =>	lcec.0.DO1.dout-2
 
 

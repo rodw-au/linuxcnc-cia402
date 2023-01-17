@@ -1,0 +1,33 @@
+# Halshow settings
+# This file is generated automatically.
+wm geometry . 700x475+1131+329
+placeFrames 0.44622093023255816
+set ::ratio 0.44622093023255816
+set ::old_w_leftf 307
+set ::watchlist {
+    pin+cia402.0.controlword
+    pin+cia402.0.pos-cmd
+    pin+cia402.0.pos-fb
+    pin+cia402.0.velocity-cmd
+    pin+cia402.0.velocity-fb
+    pin+lcec.0.0.cia-statusword
+    pin+lcec.0.0.cia-controlword
+    pin+lcec.0.0.opmode
+    pin+lcec.0.0.opmode-display
+    pin+lcec.0.0.slave-oper
+    pin+lcec.0.0.target-position
+    pin+lcec.0.0.target-velocity
+    pin+cia402.0.statusword
+    pin+cia402.2.velocity-cmd
+    sig+x-drv-target-velo
+    pin+joint.0.pos-cmd
+    pin+joint.0.vel-cmd
+    pin+cia402.0.drv-actual-position
+}
+set ::workmode watchhal
+set ::watchInterval 100
+set ::col1_width 100
+set ::ffmts 
+set ::ifmts 
+set ::alwaysOnTop 0
+set ::autoSaveWatchlist 1
