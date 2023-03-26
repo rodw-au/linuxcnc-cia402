@@ -1,17 +1,77 @@
 <masters>
-  <master idx="0" appTimePeriod="1000000" refClockSyncCycles="1">
+  <master idx="0" appTimePeriod="1000000" refClockSyncCycles="-1">
     <!-- Joint 0 -->
-    <slave idx="0" type="generic" vid="00000a88" pid="0a880004" configPdos="true">
+    <slave idx="0" type="generic" vid="000001dd" pid="10305070" configPdos="true">
       <dcConf assignActivate="300" sync0Cycle="*1" sync0Shift="0"/>
-      <sdoConfig idx="2000" subIdx="0"><sdoDataRaw data ="70 17"/></sdoConfig>  <!-- Max motor current (6.0) -->
-      <sdoConfig idx="2007" subIdx="6"><sdoDataRaw data ="05"/></sdoConfig>     <!-- Input 6 - Emergency Stop -->
-      <sdoConfig idx="2007" subIdx="5"><sdoDataRaw data ="05"/></sdoConfig>     <!-- Input 3 - Home Function -->
-      <sdoConfig idx="2011" subIdx="0"><sdoDataRaw data ="01 00"/></sdoConfig>  <!-- Closed loop -->
-      <sdoConfig idx="6098" subIdx="0"><sdoDataRaw data ="11 00"/></sdoConfig>  <!-- Home mode 17 -->
-      <sdoConfig idx="607C" subIdx="0"><sdoDataRaw data ="00 00"/></sdoConfig>  <!-- Home offset 0  -->
-      <sdoConfig idx="609A" subIdx="0"><sdoDataRaw data ="F4 01"/></sdoConfig>  <!-- Home accelleration 500 -->
-      <sdoConfig idx="6099" subIdx="01"><sdoDataRaw data ="C4 09"/></sdoConfig>  <!-- Home fast speed 2500-->
-      <sdoConfig idx="6099" subIdx="02"><sdoDataRaw data ="F4 01"/></sdoConfig>  <!-- Home slow speed 500 -->
+      <sdoConfig idx="6098" subIdx="0"><sdoDataRaw data ="22 00"/></sdoConfig>  <!-- Home mode 17 -->
+      <sdoConfig idx="214a" subIdx="0"><sdoDataRaw data ="00 01"/></sdoConfig>  <!-- auxilary encoder active -->
+      <sdoConfig idx="2149" subIdx="0"><sdoDataRaw data ="30 75"/></sdoConfig>   <!-- auxilary encoder active -->
+      <sdoConfig idx="2001" subIdx="0"><sdoDataRaw data ="00 00"/></sdoConfig>   <!-- auxilary encoder active -->
+      <sdoConfig idx="2223" subIdx="0"><sdoDataRaw data ="00 98 3A"/></sdoConfig>   <!-- auxilary encoder active -->
+
+      <syncManager idx="2" dir="out">
+        <pdo idx="1600">
+          <pdoEntry idx="6040" subIdx="00" bitLen="16" halPin="cia-controlword" halType="u32"/>
+          <pdoEntry idx="6060" subIdx="00" bitLen="8" halPin="opmode" halType="s32"/>
+          <!-- Target Position -->
+          <pdoEntry idx="607A" subIdx="00" bitLen="32" halPin="target-position" halType="s32"/>
+          <!-- Target Velocity -->
+          <pdoEntry idx="60FF" subIdx="00" bitLen="32" halPin="target-velocity" halType="s32"/>
+          <!-- error window -->
+          <!-- <pdoEntry idx="6065" subIdx="00" bitLen="32" halPin="error-window" halType="s32"/> -->
+          <!-- Digtial Outputs (manufacturer's extension ECT86/ECT60)-->
+          <pdoEntry idx="60FE" subIdx="1" bitLen="32" halType="complex">
+            <complexEntry bitLen="1" halPin="out-1" halType="bit"/>
+            <complexEntry bitLen="1" halPin="out-2" halType="bit"/>
+            <complexEntry bitLen="1" halPin="out-3" halType="bit"/>
+            <complexEntry bitLen="1" halPin="out-4" halType="bit"/>
+            <complexEntry bitLen="28"/>
+          </pdoEntry>
+          <!-- auxilary encoder controll -->
+        </pdo>
+      </syncManager>
+      <syncManager idx="3" dir="in">
+        <pdo idx="1a00">
+          <pdoEntry idx="6041" subIdx="00" bitLen="16" halPin="cia-statusword" halType="u32"/>
+          <pdoEntry idx="6061" subIdx="00" bitLen="8" halPin="opmode-display" halType="s32"/>
+          <pdoEntry idx="6064" subIdx="00" bitLen="32" halPin="actual-position" halType="s32"/>
+          <pdoEntry idx="60F4" subIdx="00" bitLen="32" halPin="following-error" halType="s32"/>
+          <pdoEntry idx="2511" subIdx="00" bitLen="32" halPin="auxilary-encoder" halType="s32"/>
+          <pdoEntry idx="606C" subIdx="00" bitLen="32" halPin="actual-velocity" halType="s32"/>
+          <!-- <pdoEntry idx="2511" subIdx="00" bitLen="32" halPin="auxilary-encoder" halType="s32"/> -->
+          <pdoEntry idx="6077" subIdx="00" bitLen="16" halPin="actual-torque" halType="s32"/>
+          <!-- Digtial_inputs (cia402 compatible) -->
+          <pdoEntry idx="60FD" subIdx="0" bitLen="32" halType="complex">
+            <complexEntry bitLen="1" halPin="CW-limit" halType="bit"/>
+            <complexEntry bitLen="1" halPin="CCW-limit" halType="bit"/>
+            <complexEntry bitLen="1" halPin="in-home" halType="bit"/>
+            <complexEntry bitLen="13"/>
+            <complexEntry bitLen="1" halPin="in-1" halType="bit"/>
+            <complexEntry bitLen="1" halPin="in-2" halType="bit"/>
+            <complexEntry bitLen="1" halPin="in-3" halType="bit"/>
+            <complexEntry bitLen="1" halPin="in-4" halType="bit"/>
+            <complexEntry bitLen="1" halPin="in-5" halType="bit"/>
+            <complexEntry bitLen="1" halPin="in-6" halType="bit"/>
+            <complexEntry bitLen="1" halPin="in-7" halType="bit"/>
+            <complexEntry bitLen="1"/>
+            <complexEntry bitLen="1" halPin="EDI-9" halType="bit"/>
+            <complexEntry bitLen="1" halPin="EDI-10" halType="bit"/>
+            <complexEntry bitLen="1" halPin="EDI-11" halType="bit"/>
+            <complexEntry bitLen="1" halPin="EDI-12" halType="bit"/>
+            <complexEntry bitLen="1" halPin="EDI-13" halType="bit"/>
+            <complexEntry bitLen="1" halPin="EDI-14" halType="bit"/>
+            <complexEntry bitLen="1"/>
+            <complexEntry bitLen="1" halPin="zpulse" halType="bit"/>
+          </pdoEntry>          
+        </pdo>
+      </syncManager>
+      <watchdog divider="2498" intervals="1000"/>
+    </slave>
+    <!-- Joint 1 -->
+    <slave idx="1" type="generic" vid="000001dd" pid="10305070" configPdos="true">
+      <dcConf assignActivate="300" sync0Cycle="*1" sync0Shift="0"/>
+      <sdoConfig idx="6098" subIdx="0"><sdoDataRaw data ="22 00"/></sdoConfig>  <!-- Home mode 17 -->
+
       <syncManager idx="2" dir="out">
         <pdo idx="1600">
           <pdoEntry idx="6040" subIdx="00" bitLen="16" halPin="cia-controlword" halType="u32"/>
@@ -21,10 +81,12 @@
           <!-- Target Velocity -->
           <pdoEntry idx="60FF" subIdx="00" bitLen="32" halPin="target-velocity" halType="s32"/>
           <!-- Digtial Outputs (manufacturer's extension ECT86/ECT60)-->
-          <pdoEntry idx="204A" subIdx="0" bitLen="16" halType="complex">
+          <pdoEntry idx="60FE" subIdx="1" bitLen="32" halType="complex">
             <complexEntry bitLen="1" halPin="out-1" halType="bit"/>
             <complexEntry bitLen="1" halPin="out-2" halType="bit"/>
-            <complexEntry bitLen="14"/>
+            <complexEntry bitLen="1" halPin="out-3" halType="bit"/>
+            <complexEntry bitLen="1" halPin="out-4" halType="bit"/>
+            <complexEntry bitLen="28"/>
           </pdoEntry>
         </pdo>
       </syncManager>
@@ -34,7 +96,7 @@
           <pdoEntry idx="6061" subIdx="00" bitLen="8" halPin="opmode-display" halType="s32"/>
           <pdoEntry idx="6064" subIdx="00" bitLen="32" halPin="actual-position" halType="s32"/>
           <pdoEntry idx="606C" subIdx="00" bitLen="32" halPin="actual-velocity" halType="s32"/>
-          <pdoEntry idx="6077" subIdx="00" bitLen="32" halPin="actual-torque" halType="s32"/>
+          <pdoEntry idx="6077" subIdx="00" bitLen="16" halPin="actual-torque" halType="s32"/>
           <!-- Digtial_inputs (cia402 compatible) -->
           <pdoEntry idx="60FD" subIdx="0" bitLen="32" halType="complex">
             <complexEntry bitLen="1" halPin="CW-limit" halType="bit"/>
@@ -47,72 +109,25 @@
             <complexEntry bitLen="1" halPin="in-4" halType="bit"/>
             <complexEntry bitLen="1" halPin="in-5" halType="bit"/>
             <complexEntry bitLen="1" halPin="in-6" halType="bit"/>
-            <complexEntry bitLen="10"/>
+            <complexEntry bitLen="1" halPin="in-7" halType="bit"/>
+            <complexEntry bitLen="1"/>
+            <complexEntry bitLen="1" halPin="EDI-9" halType="bit"/>
+            <complexEntry bitLen="1" halPin="EDI-10" halType="bit"/>
+            <complexEntry bitLen="1" halPin="EDI-11" halType="bit"/>
+            <complexEntry bitLen="1" halPin="EDI-12" halType="bit"/>
+            <complexEntry bitLen="1" halPin="EDI-13" halType="bit"/>
+            <complexEntry bitLen="1" halPin="EDI-14" halType="bit"/>
+            <complexEntry bitLen="1"/>
+            <complexEntry bitLen="1" halPin="zpulse" halType="bit"/>
           </pdoEntry>          
-        </pdo>
-      </syncManager>
-    </slave>
-    <!-- Joint 1 -->
-    <slave idx="1" type="generic" vid="00000a88" pid="0a880004" configPdos="true">
-      <dcConf assignActivate="300" sync0Cycle="*1" sync0Shift="0"/>
-      <sdoConfig idx="2000" subIdx="0"><sdoDataRaw data ="70 17"/></sdoConfig>  <!-- Max motor current (6.0) -->
-      <sdoConfig idx="2007" subIdx="6"><sdoDataRaw data ="05"/></sdoConfig>     <!-- Input 6 - Emergency Stop -->      
-      <sdoConfig idx="2011" subIdx="0"><sdoDataRaw data ="01 00"/></sdoConfig>  <!-- Closed loop -->
-      <syncManager idx="2" dir="out">
-        <pdo idx="1600">
-          <pdoEntry idx="6040" subIdx="00" bitLen="16" halPin="cia-controlword" halType="u32"/>
-          <pdoEntry idx="6060" subIdx="00" bitLen="8" halPin="opmode" halType="s32"/>
-          <!-- Target Position -->
-          <pdoEntry idx="607A" subIdx="00" bitLen="32" halPin="target-position" halType="s32"/>
-          <!-- Target Velocity -->
-          <pdoEntry idx="60FF" subIdx="00" bitLen="32" halPin="target-velocity" halType="s32"/>
-          <!-- Digtial Outputs (manufacturer's extension ECT86/ECT60)-->
-          <pdoEntry idx="204A" subIdx="0" bitLen="16" halType="complex">
-            <complexEntry bitLen="1" halPin="out-1" halType="bit"/>
-            <complexEntry bitLen="1" halPin="out-2" halType="bit"/>
-            <complexEntry bitLen="14"/>
-          </pdoEntry>           
-        </pdo>
-      </syncManager>
-      <syncManager idx="3" dir="in">
-        <pdo idx="1a00">
-          <pdoEntry idx="6041" subIdx="00" bitLen="16" halPin="cia-statusword" halType="u32"/>
-          <pdoEntry idx="6061" subIdx="00" bitLen="8" halPin="opmode-display" halType="s32"/>
-          <pdoEntry idx="6064" subIdx="00" bitLen="32" halPin="actual-position" halType="s32"/>
-          <pdoEntry idx="606C" subIdx="00" bitLen="32" halPin="actual-velocity" halType="s32"/>
-          <pdoEntry idx="6077" subIdx="00" bitLen="32" halPin="actual-torque" halType="s32"/>
-          <!-- Digtial_inputs (cia402 compatible) -->
-          <pdoEntry idx="60FD" subIdx="0" bitLen="32" halType="complex">
-            <complexEntry bitLen="1" halPin="CW-limit" halType="bit"/>
-            <complexEntry bitLen="1" halPin="CCW-limit" halType="bit"/>
-            <complexEntry bitLen="1" halPin="in-home" halType="bit"/>
-            <complexEntry bitLen="13"/>
-            <complexEntry bitLen="1" halPin="in-1" halType="bit"/>
-            <complexEntry bitLen="1" halPin="in-2" halType="bit"/>
-            <complexEntry bitLen="1" halPin="in-3" halType="bit"/>
-            <complexEntry bitLen="1" halPin="in-4" halType="bit"/>
-            <complexEntry bitLen="1" halPin="in-5" halType="bit"/>
-            <complexEntry bitLen="1" halPin="in-6" halType="bit"/>
-            <complexEntry bitLen="10"/>
-          </pdoEntry>                    
         </pdo>
       </syncManager>
     </slave>
     <!-- Joint 2 -->
-    <slave idx="2" type="generic" vid="00000a88" pid="0a880004" configPdos="true">
+    <slave idx="2" type="generic" vid="000001dd" pid="10305070" configPdos="true">
       <dcConf assignActivate="300" sync0Cycle="*1" sync0Shift="0"/>
-        <sdoConfig idx="2000" subIdx="0"><sdoDataRaw data ="58 1B"/></sdoConfig>    <!-- Max motor current (7.0 amps) -->
-      <!--   <sdoConfig idx="2024" subIdx="02"><sdoDataRaw data ="90 01"/></sdoConfig>   Position error 400 steps -->
-      <!-- <sdoConfig idx="2000" subIdx="0"><sdoDataRaw data ="88 13"/></sdoConfig>    Max motor current (5.0 amps) -->
-      <sdoConfig idx="2007" subIdx="6"><sdoDataRaw data ="05"/></sdoConfig>     - Input 6 - Emergency Stop -->
-      <sdoConfig idx="2011" subIdx="0"><sdoDataRaw data ="00 00"/></sdoConfig>  <!-- Open loop -->
-      <!-- <sdoConfig idx="200B" subIdx="01"><sdoDataRaw data ="01"/></sdoConfig>     Turn on auto setting-->
-      <!-- <sdoConfig idx="200C" subIdx="04"><sdoDataRaw data ="34 03"/></sdoConfig>  Motor Resistance -->
-      <!-- <sdoConfig idx="200C" subIdx="05"><sdoDataRaw data ="04 00"/></sdoConfig>  Motor Inductance 3.5 mH -->
-      <!-- <sdoConfig idx="200C" subIdx="06"><sdoDataRaw data ="77 01"/></sdoConfig>  Motor BEMF Cooeff 375-->
-      <!-- <sdoConfig idx="2060" subIdx="00"><sdoDataRaw data ="B8 88"/></sdoConfig>  Harmonic amplitude-->
-      <!-- <sdoConfig idx="2061" subIdx="00"><sdoDataRaw data ="84 03"/></sdoConfig>  Harmonic A phase-->
-      <!--<sdoConfig idx="2062" subIdx="00"><sdoDataRaw data ="84 03"/></sdoConfig>  Harmonic B phase-->
+      <sdoConfig idx="6098" subIdx="0"><sdoDataRaw data ="22 00"/></sdoConfig>  <!-- Home mode 17 -->
+
       <syncManager idx="2" dir="out">
         <pdo idx="1600">
           <pdoEntry idx="6040" subIdx="00" bitLen="16" halPin="cia-controlword" halType="u32"/>
@@ -122,21 +137,22 @@
           <!-- Target Velocity -->
           <pdoEntry idx="60FF" subIdx="00" bitLen="32" halPin="target-velocity" halType="s32"/>
           <!-- Digtial Outputs (manufacturer's extension ECT86/ECT60)-->
-          <pdoEntry idx="204A" subIdx="0" bitLen="16" halType="complex">
+          <pdoEntry idx="60FE" subIdx="1" bitLen="32" halType="complex">
             <complexEntry bitLen="1" halPin="out-1" halType="bit"/>
             <complexEntry bitLen="1" halPin="out-2" halType="bit"/>
-            <complexEntry bitLen="14"/>
-          </pdoEntry>          
+            <complexEntry bitLen="1" halPin="out-3" halType="bit"/>
+            <complexEntry bitLen="1" halPin="out-4" halType="bit"/>
+            <complexEntry bitLen="28"/>
+          </pdoEntry>
         </pdo>
       </syncManager>
       <syncManager idx="3" dir="in">
         <pdo idx="1a00">
-		  <pdoEntry idx="603F" subIdx="00" bitLen="16" halPin="cia-faultcode" halType="u32"/>
           <pdoEntry idx="6041" subIdx="00" bitLen="16" halPin="cia-statusword" halType="u32"/>
           <pdoEntry idx="6061" subIdx="00" bitLen="8" halPin="opmode-display" halType="s32"/>
           <pdoEntry idx="6064" subIdx="00" bitLen="32" halPin="actual-position" halType="s32"/>
           <pdoEntry idx="606C" subIdx="00" bitLen="32" halPin="actual-velocity" halType="s32"/>
-          <pdoEntry idx="6077" subIdx="00" bitLen="32" halPin="actual-torque" halType="s32"/>
+          <pdoEntry idx="6077" subIdx="00" bitLen="16" halPin="actual-torque" halType="s32"/>
           <!-- Digtial_inputs (cia402 compatible) -->
           <pdoEntry idx="60FD" subIdx="0" bitLen="32" halType="complex">
             <complexEntry bitLen="1" halPin="CW-limit" halType="bit"/>
@@ -149,66 +165,25 @@
             <complexEntry bitLen="1" halPin="in-4" halType="bit"/>
             <complexEntry bitLen="1" halPin="in-5" halType="bit"/>
             <complexEntry bitLen="1" halPin="in-6" halType="bit"/>
-            <complexEntry bitLen="10"/>
-          </pdoEntry>
-        </pdo>        
+            <complexEntry bitLen="1" halPin="in-7" halType="bit"/>
+            <complexEntry bitLen="1"/>
+            <complexEntry bitLen="1" halPin="EDI-9" halType="bit"/>
+            <complexEntry bitLen="1" halPin="EDI-10" halType="bit"/>
+            <complexEntry bitLen="1" halPin="EDI-11" halType="bit"/>
+            <complexEntry bitLen="1" halPin="EDI-12" halType="bit"/>
+            <complexEntry bitLen="1" halPin="EDI-13" halType="bit"/>
+            <complexEntry bitLen="1" halPin="EDI-14" halType="bit"/>
+            <complexEntry bitLen="1"/>
+            <complexEntry bitLen="1" halPin="zpulse" halType="bit"/>
+          </pdoEntry>          
+        </pdo>
       </syncManager>
+      <watchdog divider="2498" intervals="1000"/>
     </slave>
     
-    <slave idx="3" type="generic" vid="00000a88" pid="0x0a880101" configPdos="false">
-      <dcConf assignActivate="300" sync0Cycle="*1" sync0Shift="0"/>     
-      <syncManager idx="2" dir="out">
-        <pdo idx="1600">            
-  	      <!-- Digtial Outputs (RTEC1616)-->
-		  <pdoEntry idx="7000" subIdx="01" bitLen="16" halType="complex">
-		    <complexEntry bitLen="1" halPin="out-01" halType="bit"/>
-		    <complexEntry bitLen="1" halPin="out-02" halType="bit"/>
-		    <complexEntry bitLen="1" halPin="out-03" halType="bit"/>
-		    <complexEntry bitLen="1" halPin="out-04" halType="bit"/>
-		    <complexEntry bitLen="1" halPin="out-05" halType="bit"/>
-		    <complexEntry bitLen="1" halPin="out-06" halType="bit"/>
-		    <complexEntry bitLen="1" halPin="out-07" halType="bit"/>
-		    <complexEntry bitLen="1" halPin="out-08" halType="bit"/>
-		    <complexEntry bitLen="1" halPin="out-09" halType="bit"/>
-		    <complexEntry bitLen="1" halPin="out-10" halType="bit"/>
-		    <complexEntry bitLen="1" halPin="out-11" halType="bit"/>
-		    <complexEntry bitLen="1" halPin="out-12" halType="bit"/>
-		    <complexEntry bitLen="1" halPin="out-13" halType="bit"/>
-		    <complexEntry bitLen="1" halPin="out-14" halType="bit"/>
-		    <complexEntry bitLen="1" halPin="out-15" halType="bit"/>
-		    <complexEntry bitLen="1" halPin="out-16" halType="bit"/>
-		  </pdoEntry>  
-		  <pdoEntry idx="7000" subIdx="02" bitLen="16" halPin="pwm_duty1" halType="s32"/>
-		  <pdoEntry idx="7000" subIdx="03" bitLen="16" halPin="pwm_duty2" halType="s32"/>
-		  <pdoEntry idx="7000" subIdx="04" bitLen="16" halPin="pwm_duty3" halType="s32"/>
-		  <pdoEntry idx="7000" subIdx="05" bitLen="16" halPin="pwm_duty4" halType="s32"/>	  
-      </pdo>
-      </syncManager>      
-      <syncManager idx="3" dir="in">
-        <pdo idx="1A00">	
-          <!-- Digtial_inputs  -->
-		  <pdoEntry idx="6000" subIdx="01" bitLen="32" halType="complex">
-			<complexEntry bitLen="1" halPin="in-01" halType="bit"/>
-			<complexEntry bitLen="1" halPin="in-02" halType="bit"/>
-			<complexEntry bitLen="1" halPin="in-03" halType="bit"/>
-			<complexEntry bitLen="1" halPin="in-04" halType="bit"/>
-			<complexEntry bitLen="1" halPin="in-05" halType="bit"/>
-			<complexEntry bitLen="1" halPin="in-06" halType="bit"/>
-			<complexEntry bitLen="1" halPin="in-07" halType="bit"/>
-			<complexEntry bitLen="1" halPin="in-08" halType="bit"/>
-			<complexEntry bitLen="1" halPin="in-09" halType="bit"/>
-			<complexEntry bitLen="1" halPin="in-10" halType="bit"/>
-			<complexEntry bitLen="1" halPin="in-11" halType="bit"/>
-			<complexEntry bitLen="1" halPin="in-12" halType="bit"/>
-			<complexEntry bitLen="1" halPin="in-13" halType="bit"/>
-			<complexEntry bitLen="1" halPin="in-14" halType="bit"/>
-			<complexEntry bitLen="1" halPin="in-15" halType="bit"/>
-			<complexEntry bitLen="1" halPin="in-16" halType="bit"/>	
- 		  </pdoEntry>  
-        </pdo>
-      </syncManager>     
-       
-    </slave>
+    <slave idx="3" type="EK1100" name="DE"/>
+    <slave idx="4" type="EL1004" name="DI1"/>
+    <slave idx="5" type="EL2004" name="DO1"/>
    </master>
 </masters>
 
