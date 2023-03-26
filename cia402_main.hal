@@ -14,13 +14,15 @@ loadrt [EMCMOT]EMCMOT servo_period_nsec=[EMCMOT]SERVO_PERIOD num_joints=[KINS]JO
 loadusr -W lcec_conf ethercat-conf.xml
 loadrt lcec
 loadrt cia402 count=3
-loadrt pid names=pid.x,pid.y,pid.z
+loadrt pid names=pid.x,pid.y,pid.z debug=1
+#loadrt classicladder_rt --modmaster
 
 ###########################################################
 # Functions servo-thread
 ###########################################################
 
 addf lcec.read-all servo-thread
+
 addf cia402.0.read-all servo-thread
 addf cia402.1.read-all servo-thread
 addf cia402.2.read-all servo-thread
@@ -31,6 +33,8 @@ addf motion-controller servo-thread
 addf pid.x.do-pid-calcs servo-thread
 addf pid.y.do-pid-calcs servo-thread
 addf pid.z.do-pid-calcs servo-thread
+
+#addf classicladder.0.refresh servo-thread
 
 addf cia402.0.write-all servo-thread
 addf cia402.1.write-all servo-thread
@@ -49,7 +53,7 @@ net ec-slaves-responding <= lcec.slaves-responding
 net ec-link-up <= lcec.link-up
 net ec-all-op <= lcec.all-op
 
-
+loadusr -Wn spindle-vfd vfdb_vfd -n spindle-vfd -S VFDB -r
 
 #config
 
@@ -58,22 +62,24 @@ net ec-all-op <= lcec.all-op
 # Joint 0
 #
 setp cia402.0.csp-mode 1
-setp cia402.0.velo-scale 1
+setp cia402.0.velo-scale 5
 setp cia402.0.pos-scale 256000
 
 #modification
-setp pid.x.Pgain [JOINT_0]P
-setp pid.x.Igain [JOINT_0]I
-setp pid.x.Dgain [JOINT_0]D
-setp pid.x.FF0 [JOINT_0]FF0
-setp pid.x.FF1 [JOINT_0]FF1
-setp pid.x.FF2 [JOINT_0]FF2
-setp pid.x.deadband [JOINT_0]DEADBAND
-setp pid.x.maxoutput [JOINT_0]MAX_OUTPUT
-net x-enable => pid.x.enable
-net x-pos-cmd => pid.x.command
-net x-pos-fb => pid.x.feedback
-net x-vel-cmd <= pid.x.output
+#setp pid.x.Pgain [JOINT_0]P
+#setp pid.x.Igain [JOINT_0]I
+#setp pid.x.Dgain [JOINT_0]D
+#setp pid.x.FF0 [JOINT_0]FF0
+#setp pid.x.FF1 [JOINT_0]FF1
+#setp pid.x.FF2 [JOINT_0]FF2
+#setp pid.x.deadband [JOINT_0]DEADBAND
+#setp pid.x.maxoutput [JOINT_0]MAX_OUTPUT
+
+#net x-index-enable  <=>  pid.x.index-enable
+#net x-enable => pid.x.enable
+#net x-pos-cmd => pid.x.command
+#net x-pos-fb => pid.x.feedback
+#net x-vel-cmd <= pid.x.output => cia402.0.velocity-cmd
 
 #from servo(ethercat) to cia402
 net x-statusword      lcec.0.0.cia-statusword => cia402.0.statusword
@@ -113,11 +119,12 @@ net x-neg-lim-in => joint.0.neg-lim-sw-in
 net x-pos-lim-in => joint.0.pos-lim-sw-in
 
 #net x-vel-cmd =>cia402.0.velocity-cmd
+
 #
 # Joint 1
 #
-setp cia402.1.csp-mode 1
-setp cia402.1.velo-scale 1
+setp cia402.1.csp-mode 0
+setp cia402.1.velo-scale 5
 setp cia402.1.pos-scale 256000
 
 #modification
@@ -129,10 +136,12 @@ setp pid.y.FF1 [JOINT_1]FF1
 setp pid.y.FF2 [JOINT_1]FF2
 setp pid.y.deadband [JOINT_1]DEADBAND
 setp pid.y.maxoutput [JOINT_1]MAX_OUTPUT
+
+net y-index-enable  <=>  pid.y.index-enable
 net y-enable => pid.y.enable
 net y-pos-cmd => pid.y.command
 net y-pos-fb => pid.y.feedback
-net y-vel-cmd <= pid.y.output
+net y-vel-cmd <= pid.y.output => cia402.1.velocity-cmd
 
 #from servo(ethercat) to cia402
 net y-statusword      lcec.0.1.cia-statusword => cia402.1.statusword
@@ -140,29 +149,45 @@ net y-opmode-display  lcec.0.1.opmode-display => cia402.1.opmode-display
 net y-drv-act-pos     lcec.0.1.actual-position => cia402.1.drv-actual-position
 net y-drv-act-velo    lcec.0.1.actual-velocity => cia402.1.drv-actual-velocity
 
+#from motion to cia
+
+net y-home-index <= joint.1.index-enable  => cia402.1.home
+net y-enable     <= joint.1.amp-enable-out => cia402.1.enable
+net y-amp-fault  => joint.1.amp-fault-in   <= cia402.1.drv-fault
+net y-pos-cmd    <= joint.1.motor-pos-cmd  => cia402.1.pos-cmd
+net y-pos-fb     => joint.1.motor-pos-fb   <= cia402.1.pos-fb
+#net y-home          lcec.0.1.in-5          => joint.1.home-sw-in
+
 #from cia402 to servo(ethercat)
 net y-controlword         cia402.1.controlword => lcec.0.1.cia-controlword
 net y-modes-of-operation  cia402.1.opmode => lcec.0.1.opmode
 net y-drv-target-pos      cia402.1.drv-target-position => lcec.0.1.target-position
 net y-drv-target-velo     cia402.1.drv-target-velocity => lcec.0.1.target-velocity
 
-#from motion to cia
-net y-enable    <= joint.1.amp-enable-out => cia402.1.enable
-net y-amp-fault => joint.1.amp-fault-in   <= cia402.1.drv-fault
-net y-pos-cmd   <= joint.1.motor-pos-cmd  => cia402.1.pos-cmd
-net y-pos-fb    => joint.1.motor-pos-fb   <= cia402.1.pos-fb
+#modifications
 
 
-#modif2
+
+# axis interface
+net y-neg-lim-in => joint.1.home-sw-in
+#net y-enable <= joint.1.amp-enable-out
+#net y-amp-fault => joint.1.amp-fault-in
+#net y-pos-cmd <= joint.1.motor-pos-cmd
+#net y-pos-fb => joint.1.motor-pos-fb
 net y-pos-joint <= joint.1.pos-fb
 net y-homed <= joint.1.homed
 net y-homing <= joint.1.homing
+net y-neg-lim-in => joint.1.neg-lim-sw-in
+net y-pos-lim-in => joint.1.pos-lim-sw-in
+
+#net y-vel-cmd =>cia402.1.velocity-cmd
+
 
 #
 # Joint 2
 #
-setp cia402.2.csp-mode 1
-setp cia402.2.velo-scale .1
+setp cia402.2.csp-mode 0
+setp cia402.2.velo-scale 5
 setp cia402.2.pos-scale 256000
 
 #modification
@@ -174,10 +199,12 @@ setp pid.z.FF1 [JOINT_2]FF1
 setp pid.z.FF2 [JOINT_2]FF2
 setp pid.z.deadband [JOINT_2]DEADBAND
 setp pid.z.maxoutput [JOINT_2]MAX_OUTPUT
+
+net z-index-enable  <=>  pid.z.index-enable
 net z-enable => pid.z.enable
 net z-pos-cmd => pid.z.command
 net z-pos-fb => pid.z.feedback
-net z-vel-cmd <= pid.z.output
+net z-vel-cmd <= pid.z.output => cia402.2.velocity-cmd
 
 #from servo(ethercat) to cia402
 net z-statusword      lcec.0.2.cia-statusword => cia402.2.statusword
@@ -185,24 +212,39 @@ net z-opmode-display  lcec.0.2.opmode-display => cia402.2.opmode-display
 net z-drv-act-pos     lcec.0.2.actual-position => cia402.2.drv-actual-position
 net z-drv-act-velo    lcec.0.2.actual-velocity => cia402.2.drv-actual-velocity
 
+#from motion to cia
+
+net z-home-index <= joint.2.index-enable  => cia402.2.home
+net z-enable     <= joint.2.amp-enable-out => cia402.2.enable
+net z-amp-fault  => joint.2.amp-fault-in   <= cia402.2.drv-fault
+net z-pos-cmd    <= joint.2.motor-pos-cmd  => cia402.2.pos-cmd
+net z-pos-fb     => joint.2.motor-pos-fb   <= cia402.2.pos-fb
+#net z-home          lcec.0.2.in-5          => joint.2.home-sw-in
+
 #from cia402 to servo(ethercat)
 net z-controlword         cia402.2.controlword => lcec.0.2.cia-controlword
 net z-modes-of-operation  cia402.2.opmode => lcec.0.2.opmode
 net z-drv-target-pos      cia402.2.drv-target-position => lcec.0.2.target-position
 net z-drv-target-velo     cia402.2.drv-target-velocity => lcec.0.2.target-velocity
 
-#from motion to cia
-net z-enable    <= joint.2.amp-enable-out => cia402.2.enable
-net z-amp-fault => joint.2.amp-fault-in   <= cia402.2.drv-fault
-net z-pos-cmd   <= joint.2.motor-pos-cmd  => cia402.2.pos-cmd
-net z-pos-fb    => joint.2.motor-pos-fb   <= cia402.2.pos-fb
+#modifications
 
 
-#modif2
+
+# axis interface
+net z-neg-lim-in => joint.2.home-sw-in
+#net z-enable <= joint.2.amp-enable-out
+#net z-amp-fault => joint.2.amp-fault-in
+#net z-pos-cmd <= joint.2.motor-pos-cmd
+#net z-pos-fb => joint.2.motor-pos-fb
 net z-pos-joint <= joint.2.pos-fb
 net z-homed <= joint.2.homed
 net z-homing <= joint.2.homing
+net z-neg-lim-in => joint.2.neg-lim-sw-in
+net z-pos-lim-in => joint.2.pos-lim-sw-in
 
+
+#loadusr classicladder
 
 #
 # Slave 3 I/O module - RTEC1616
@@ -214,4 +256,30 @@ net spindle-on spindle.0.on => lcec.0.DO1.dout-0
 net mist-on iocontrol.0.coolant-mist => lcec.0.DO1.dout-1
 net coolant-on => iocontrol.0.coolant-flood =>	lcec.0.DO1.dout-2
 
+net vfdb-fwd <= spindle.0.forward
+net vfdb-rev <= spindle.0.reverse
 
+# connect the spindle on pin to the VF-S11
+net spindle-on => spindle-vfd.spindle-on
+
+# connect the VF-S11 at speed to the motion at speed
+net vfdb-at-speed <= spindle-vfd.at-speed => spindle.0.at-speed
+
+# connect the spindle RPM to the VF-S11
+net spindle-t-speed-out         spindle-vfd.speed-command =>  spindle.0.speed-out
+net spindle-t-speed-feedback    spindle-vfd.motor-RPS => spindle.0.speed-out-rps
+
+# to use the VFS11 jog mode for spindle orient 
+# see orient.9 and motion.9
+# TODO: this mode is not verified
+#net spindle-orient spindle.0.orient spindle-vfd.max-speed spindle-vfd.jog-mode
+
+# take precedence over control panel
+setp spindle-vfd.enable 1
+
+setp spindle-vfd.rpm-limit 12000
+setp spindle-vfd.nameplate-RPM 12000
+setp spindle-vfd.nameplate-HZ 200
+#net spindle-on <= motion.spindle-on
+#net spindle-cw <= motion.spindle-forward
+#net spindle-ccw <= motion.spindle-reverse
